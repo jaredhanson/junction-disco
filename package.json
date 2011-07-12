@@ -1,0 +1,16 @@
+{
+  "name": "junction-disco",
+  "version": "0.0.0",
+  "description": "Service Discovery development framework for Junction.",
+  "author": "Jared Hanson <jaredhanson@gmail.com> (http://www.jaredhanson.net/)",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jaredhanson/junction-disco.git"
+  },
+  "main": "./lib/junction-disco",
+  "dependencies": {
+    "junction": ">= 0.1.0"
+  },
+  "engines": { "node": ">= 0.4.0" },
+  "keywords": ["junction", "disco", "xmpp", "jabber"]
+}
