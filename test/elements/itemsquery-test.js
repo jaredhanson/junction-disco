@@ -1,33 +1,33 @@
 var vows = require('vows');
 var assert = require('assert');
-var QueryItems = require('junction-disco/elements/queryitems');
+var ItemsQuery = require('junction-disco/elements/itemsquery');
 
 
-vows.describe('QueryItems').addBatch({
+vows.describe('ItemsQuery').addBatch({
 
   'when constructed': {
     topic: function() {
-      return new QueryItems();
+      return new ItemsQuery();
     },
     
     'should not have a node': function (query) {
       assert.isUndefined(query.node);
     },
-    'should build correct XML string': function(pubsub) {
-      assert.equal(pubsub.toXML().toString(), '<query xmlns="http://jabber.org/protocol/disco#items"/>');
+    'should build correct XML string': function(query) {
+      assert.equal(query.toXML().toString(), '<query xmlns="http://jabber.org/protocol/disco#items"/>');
     },
   },
   
   'when constructed with a node': {
     topic: function() {
-      return new QueryItems('http://jabber.org/protocol/commands');
+      return new ItemsQuery('http://jabber.org/protocol/commands');
     },
     
     'should have a node': function (query) {
       assert.equal(query.node, 'http://jabber.org/protocol/commands');
     },
-    'should build correct XML string': function(pubsub) {
-      assert.equal(pubsub.toXML().toString(), '<query node="http://jabber.org/protocol/commands" xmlns="http://jabber.org/protocol/disco#items"/>');
+    'should build correct XML string': function(query) {
+      assert.equal(query.toXML().toString(), '<query node="http://jabber.org/protocol/commands" xmlns="http://jabber.org/protocol/disco#items"/>');
     },
   },
 
