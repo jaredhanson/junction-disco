@@ -63,4 +63,23 @@ vows.describe('Route').addBatch({
     },
   },
   
+  'initialize with query, callback, and middleware options': {
+    topic: function() {
+      return new Route('info', function(){}, { middleware: [] });
+    },
+    
+    'should have a query property': function (route) {
+      assert.equal(route.query, 'info');
+    },
+    'should not have a node property': function (route) {
+      assert.isNull(route.node);
+    },
+    'should have a callback property': function (route) {
+      assert.isFunction(route.callback);
+    },
+    'should not have a middleware property': function (route) {
+      assert.length(route.middleware, 0);
+    },
+  },
+  
 }).export(module);
