@@ -22,7 +22,7 @@ vows.describe('Client').addBatch({
     },
   },
   
-  'receiving an info query': {
+  'receiving an info query registered with a null node': {
     topic: function() {
       var self = this;
       var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
@@ -43,7 +43,7 @@ vows.describe('Client').addBatch({
     },
   },
   
-  'receiving an items query': {
+  'receiving an items query registered with a null node': {
     topic: function() {
       var self = this;
       var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });

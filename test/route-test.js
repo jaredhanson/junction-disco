@@ -6,9 +6,9 @@ var Route = require('junction-disco/route');
 
 vows.describe('Route').addBatch({
   
-  'initialize with query, node, and callback': {
+  'initialize with query, node, and callbacks': {
     topic: function() {
-      return new Route('info', 'music', function(){});
+      return new Route('info', 'music', [ function(){} ]);
     },
     
     'should have a query property': function (route) {
@@ -17,68 +17,37 @@ vows.describe('Route').addBatch({
     'should have a node property': function (route) {
       assert.equal(route.node, 'music');
     },
-    'should have a callback property': function (route) {
-      assert.isFunction(route.callback);
+    'should have a callbacks property': function (route) {
+      assert.isArray(route.callbacks);
     },
-    'should not have a middleware property': function (route) {
-      assert.isUndefined(route.middleware);
+    'should have a regexp property': function (route) {
+      assert.instanceOf(route.regexp, RegExp);
     },
   },
   
-  'initialize with query, node, callback, and middleware options': {
+  'initialize with query, null node, and callbacks': {
     topic: function() {
-      return new Route('info', 'music', function(){}, { middleware: [] });
+      return new Route('info', null, [ function(){} ]);
     },
     
     'should have a query property': function (route) {
       assert.equal(route.query, 'info');
     },
-    'should have a node property': function (route) {
-      assert.equal(route.node, 'music');
-    },
-    'should have a callback property': function (route) {
-      assert.isFunction(route.callback);
-    },
-    'should not have a middleware property': function (route) {
-      assert.length(route.middleware, 0);
-    },
-  },
-  
-  'initialize with query and callback': {
-    topic: function() {
-      return new Route('info', function(){});
-    },
-    
-    'should have a query property': function (route) {
-      assert.equal(route.query, 'info');
-    },
-    'should not have a node property': function (route) {
+    'should have a node property set to null': function (route) {
       assert.isNull(route.node);
     },
-    'should have a callback property': function (route) {
-      assert.isFunction(route.callback);
+    'should have a callbacks property': function (route) {
+      assert.isArray(route.callbacks);
     },
-    'should not have a middleware property': function (route) {
-      assert.isUndefined(route.middleware);
+    'should have a regexp property set to null': function (route) {
+      assert.isNull(route.regexp);
     },
-  },
-  
-  'initialize with query, callback, and middleware options': {
-    topic: function() {
-      return new Route('info', function(){}, { middleware: [] });
+    'should match a null node': function (route) {
+      assert.isArray(route.match(null));
+      assert.length(route.match(null), 0);
     },
-    
-    'should have a query property': function (route) {
-      assert.equal(route.query, 'info');
-    },
-    'should not have a node property': function (route) {
-      assert.isNull(route.node);
-    },
-    'should have a callback property': function (route) {
-      assert.isFunction(route.callback);
-    },
-    'should not have a middleware property': function (route) {
-      assert.length(route.middleware, 0);
+    'should not match a node': function (route) {
+      assert.isNull(route.match('node'));
     },
   },
   
