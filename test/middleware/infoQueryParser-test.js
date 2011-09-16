@@ -15,7 +15,32 @@ vows.describe('infoQueryParser').addBatch({
       return infoQueryParser();
     },
     
-    'when handling an info request': {
+    'when handling an info request without a node': {
+      topic: function(infoQueryParser) {
+        var self = this;
+        var iq = new IQ('plays.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var queryEl = new InfoQuery();
+        iq.c(queryEl);
+        iq = iq.toXML();
+        iq.type = iq.attrs.type;
+        
+        function next(err) {
+          self.callback(err, iq);
+        }
+        process.nextTick(function () {
+          infoQueryParser(iq, next)
+        });
+      },
+      
+      'should set query property' : function(err, stanza) {
+        assert.equal(stanza.query, 'info');
+      },
+      'should set node property to null' : function(err, stanza) {
+        assert.isNull(stanza.node);
+      },
+    },
+    
+    'when handling an info request with a node': {
       topic: function(infoQueryParser) {
         var self = this;
         var iq = new IQ('plays.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
@@ -40,29 +65,7 @@ vows.describe('infoQueryParser').addBatch({
       },
     },
     
-    'when handling an info request without a node': {
-      topic: function(infoQueryParser) {
-        var self = this;
-        var iq = new IQ('plays.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
-        var queryEl = new InfoQuery();
-        iq.c(queryEl);
-        iq = iq.toXML();
-        iq.type = iq.attrs.type;
-        
-        function next(err) {
-          self.callback(err, iq);
-        }
-        process.nextTick(function () {
-          infoQueryParser(iq, next)
-        });
-      },
-      
-      'should set node property to null' : function(err, stanza) {
-        assert.isNull(stanza.node);
-      },
-    },
-    
-    'when handling a non-info request': {
+    'when handling an items request': {
       topic: function(infoQueryParser) {
         var self = this;
         var iq = new IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
@@ -87,7 +90,7 @@ vows.describe('infoQueryParser').addBatch({
       },
     },
     
-    'when handling a non-IQ-get info request': {
+    'when handling an IQ-set info request': {
       topic: function(infoQueryParser) {
         var self = this;
         var iq = new IQ('plays.shakespeare.lit', 'romeo@montague.net/orchard', 'set');
