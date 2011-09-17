@@ -22,7 +22,7 @@ vows.describe('Client').addBatch({
     },
   },
   
-  'receiving an info query registered with a null node': {
+  'routing an info query to a null node': {
     topic: function() {
       var self = this;
       var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
@@ -43,7 +43,7 @@ vows.describe('Client').addBatch({
     },
   },
   
-  'receiving an items query registered with a null node': {
+  'routing an items query to a null node': {
     topic: function() {
       var self = this;
       var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
@@ -61,6 +61,170 @@ vows.describe('Client').addBatch({
     
     'should dispatch a request': function (err, stanza) {
       assert.isNotNull(stanza);
+    },
+  },
+  
+  'routing a query to a node': {
+    topic: function() {
+      var self = this;
+      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      client.items('music', function(req, res, next) {
+        self.callback(null, req);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new ItemsQuery('music');
+        iq.id = '1';
+        iq.c(query);
+        client.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, stanza) {
+      assert.isNotNull(stanza);
+    },
+  },
+  
+  'routing a query to a node with middleware': {
+    topic: function() {
+      var self = this;
+      
+      function doSomething(req, res, next) {
+        req.calls = 1;
+        next();
+      }
+      
+      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      client.items('music', doSomething, function(req, res, next) {
+        self.callback(null, req);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new ItemsQuery('music');
+        iq.id = '1';
+        iq.c(query);
+        client.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, stanza) {
+      assert.isNotNull(stanza);
+    },
+    'should invoke middleware': function (err, stanza) {
+      assert.equal(stanza.calls, 1);
+    },
+  },
+  
+  'routing a query to a node with multiple middleware': {
+    topic: function() {
+      var self = this;
+      
+      function doSomething(req, res, next) {
+        req.calls = 1;
+        next();
+      }
+      function doSomethingElse(req, res, next) {
+        req.calls++;
+        next();
+      }
+      
+      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      client.items('music', doSomething, doSomethingElse, function(req, res, next) {
+        self.callback(null, req);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new ItemsQuery('music');
+        iq.id = '1';
+        iq.c(query);
+        client.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, stanza) {
+      assert.isNotNull(stanza);
+    },
+    'should invoke middleware': function (err, stanza) {
+      assert.equal(stanza.calls, 2);
+    },
+  },
+  
+  'routing a query to a node with multiple middleware as an array': {
+    topic: function() {
+      var self = this;
+      
+      function doSomething(req, res, next) {
+        req.calls = 1;
+        next();
+      }
+      function doSomethingElse(req, res, next) {
+        req.calls++;
+        next();
+      }
+      var doAll = [doSomething, doSomethingElse];
+      
+      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      client.items('music', doAll, function(req, res, next) {
+        self.callback(null, req);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new ItemsQuery('music');
+        iq.id = '1';
+        iq.c(query);
+        client.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, stanza) {
+      assert.isNotNull(stanza);
+    },
+    'should invoke middleware': function (err, stanza) {
+      assert.equal(stanza.calls, 2);
+    },
+  },
+  
+  'routing a query to a node with multiple middleware as multiple arrays': {
+    topic: function() {
+      var self = this;
+      
+      function doSomething(req, res, next) {
+        req.calls = 1;
+        next();
+      }
+      function doSomethingElse(req, res, next) {
+        req.calls++;
+        next();
+      }
+      function otherStuff(req, res, next) {
+        req.calls++;
+        next();
+      }
+      function otherThings(req, res, next) {
+        req.calls++;
+        next();
+      }
+      var doAll = [doSomething, doSomethingElse];
+      var otherAll = [otherStuff, otherThings];
+      
+      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      client.items('music', doAll, otherAll, function(req, res, next) {
+        self.callback(null, req);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new ItemsQuery('music');
+        iq.id = '1';
+        iq.c(query);
+        client.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, stanza) {
+      assert.isNotNull(stanza);
+    },
+    'should invoke middleware': function (err, stanza) {
+      assert.equal(stanza.calls, 4);
     },
   },
   
