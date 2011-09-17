@@ -252,7 +252,7 @@ vows.describe('Client').addBatch({
     },
   },
   
-  'routing a query to a node with a multiple captures': {
+  'routing a query to a node with multiple captures': {
     topic: function() {
       var self = this;
       var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
