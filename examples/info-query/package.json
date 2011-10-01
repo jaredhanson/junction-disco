@@ -1,0 +1,9 @@
+{
+  "name": "junction-disco-examples-info-query",
+  "version": "0.0.0",
+  "dependencies": {
+    "junction-disco": ">= 0.0.0",
+    "junction": ">= 0.0.0",
+    "optimist": ">= 0.0.0"
+  }
+}
