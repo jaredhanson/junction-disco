@@ -9,7 +9,7 @@
   },
   "main": "./lib/junction-disco",
   "dependencies": {
-    "junction": ">= 0.1.2"
+    "junction": ">= 0.1.3"
   },
   "engines": { "node": ">= 0.4.0" },
   "keywords": ["junction", "disco", "xmpp", "jabber", "xep0030"]
