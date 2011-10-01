@@ -7,6 +7,16 @@ var util = require('util');
 
 vows.describe('Library').addBatch({
   
+  'junction-disco': {
+    topic: function() {
+      return null;
+    },
+    
+    'should report a version': function (x) {
+      assert.isString(disco.version);
+    },
+  },
+  
   'create connection with client type': {
     topic: function() {
       return new disco.createConnection({ type: 'client', jid: 'user@invalid.host', disableStream: true });
