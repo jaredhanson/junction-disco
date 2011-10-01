@@ -3,6 +3,10 @@
 Fast and light XMPP Service Discovery framework built on [Node](http://nodejs.org)
 and [Junction](http://github.com/jaredhanson/junction).
 
+## Installation
+
+    $ npm install junction-disco
+
 ## License
 
 (The MIT License)
