@@ -36,7 +36,7 @@ vows.describe('infoQueryResultParser').addBatch({
       
       'should set identities property' : function(err, stanza) {
         assert.isArray(stanza.identities);
-        assert.length(stanza.identities, 2);
+        assert.lengthOf(stanza.identities, 2);
         assert.equal(stanza.identities[0].category, 'conference');
         assert.equal(stanza.identities[0].type, 'text');
         assert.equal(stanza.identities[0].name, 'Play-Specific Chatrooms');
@@ -46,7 +46,7 @@ vows.describe('infoQueryResultParser').addBatch({
       },
       'should set features property' : function(err, stanza) {
         assert.isArray(stanza.features);
-        assert.length(stanza.features, 3);
+        assert.lengthOf(stanza.features, 3);
         assert.equal(stanza.features[0], 'http://jabber.org/protocol/disco#info');
         assert.equal(stanza.features[1], 'http://jabber.org/protocol/disco#items');
         assert.equal(stanza.features[2], 'http://jabber.org/protocol/muc');

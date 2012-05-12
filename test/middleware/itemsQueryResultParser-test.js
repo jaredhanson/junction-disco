@@ -34,7 +34,7 @@ vows.describe('itemsQueryResultParser').addBatch({
       
       'should set items property' : function(err, stanza) {
         assert.isArray(stanza.items);
-        assert.length(stanza.items, 2);
+        assert.lengthOf(stanza.items, 2);
         assert.instanceOf(stanza.items[0].jid, JID);
         assert.equal(stanza.items[0].jid, 'catalog.shakespeare.lit');
         assert.equal(stanza.items[0].node, 'books');

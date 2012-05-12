@@ -2,9 +2,9 @@ var vows = require('vows');
 var assert = require('assert');
 var junction = require('junction');
 var util = require('util');
-var Component = require('junction-disco/component');
+//var Component = require('junction-disco/component');
 
-
+/*
 vows.describe('Component').addBatch({
   
   'initialization': {
@@ -21,3 +21,4 @@ vows.describe('Component').addBatch({
   },
   
 }).export(module);
+*/

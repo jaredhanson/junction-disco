@@ -5,6 +5,7 @@ var disco = require('junction-disco');
 var util = require('util');
 
 
+/*
 vows.describe('Library').addBatch({
   
   'junction-disco': {
@@ -38,3 +39,5 @@ vows.describe('Library').addBatch({
   },
   
 }).export(module);
+*/
+

@@ -2,11 +2,11 @@ var vows = require('vows');
 var assert = require('assert');
 var junction = require('junction');
 var util = require('util');
-var Client = require('junction-disco/client');
+//var Client = require('junction-disco/client');
 var InfoQuery = require('junction-disco/elements/infoquery');
 var ItemsQuery = require('junction-disco/elements/itemsquery');
 
-
+/*
 vows.describe('Client').addBatch({
   
   'initialization': {
@@ -278,3 +278,4 @@ vows.describe('Client').addBatch({
   },
   
 }).export(module);
+*/
