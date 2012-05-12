@@ -37,10 +37,10 @@ vows.describe('infoQuery').addBatch({
       'should set query property' : function(err, stanza) {
         assert.equal(stanza.pending.query, 'info');
       },
-      'should set query property' : function(err, stanza) {
+      'should set jid property' : function(err, stanza) {
         assert.equal(stanza.pending.jid, 'mim.shakespeare.lit');
       },
-      'should set query property' : function(err, stanza) {
+      'should set node property' : function(err, stanza) {
         assert.equal(stanza.pending.node, 'http://jabber.org/protocol/commands');
       },
     },
