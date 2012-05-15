@@ -7,6 +7,17 @@ and [Junction](http://github.com/jaredhanson/junction).
 
     $ npm install junction-disco
 
+## Tests
+
+    $ npm install --dev
+    $ make test
+
+[![Build Status](https://secure.travis-ci.org/jaredhanson/junction-disco.png)](http://travis-ci.org/jaredhanson/junction-disco)
+
+## Credits
+
+  - [Jared Hanson](http://github.com/jaredhanson)
+
 ## License
 
 (The MIT License)
