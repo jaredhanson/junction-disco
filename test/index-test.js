@@ -1,43 +1,36 @@
 var vows = require('vows');
 var assert = require('assert');
-var junction = require('junction');
 var disco = require('junction-disco');
 var util = require('util');
 
 
-/*
-vows.describe('Library').addBatch({
+vows.describe('junction-disco').addBatch({
   
-  'junction-disco': {
-    topic: function() {
-      return null;
-    },
-    
-    'should report a version': function (x) {
-      assert.isString(disco.version);
-    },
+  'should export version': function() {
+    assert.isString(disco.version);
   },
   
-  'create connection with client type': {
-    topic: function() {
-      return new disco.createConnection({ type: 'client', jid: 'user@invalid.host', disableStream: true });
-    },
-    
-    'should be an instance of Client': function (c) {
-      assert.instanceOf(c, disco.Client);
-    },
+  'should export create function': function() {
+    assert.isFunction(disco);
+    assert.isFunction(disco.create);
+    assert.equal(disco, disco.create);
   },
   
-  'create connection with component type': {
-    topic: function() {
-      return new disco.createConnection({ type: 'component', jid: 'component.invalid.host', host: 'invalid.host', port: 5060, disableStream: true });
-    },
-    
-    'should be an instance of Component': function (c) {
-      assert.instanceOf(c, disco.Component);
-    },
+  'should export elements': function() {
+    assert.isFunction(disco.elements.InfoQuery);
+    assert.isFunction(disco.elements.Identity);
+    assert.isFunction(disco.elements.Feature);
+    assert.isFunction(disco.elements.ItemsQuery);
+    assert.isFunction(disco.elements.Item);
+  },
+  
+  'should export middleware': function() {
+    assert.isFunction(disco.middleware.infoQueryResultParser);
+    assert.isFunction(disco.middleware.itemsQueryResultParser);
+  },
+  
+  'should export filters': function() {
+    assert.isFunction(disco.filters.infoQuery);
   },
   
 }).export(module);
-*/
-
