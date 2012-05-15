@@ -1,5 +1,6 @@
 var vows = require('vows');
 var assert = require('assert');
+var events = require('events');
 var junction = require('junction');
 var util = require('util');
 var disco = require('junction-disco/index');
@@ -23,28 +24,39 @@ vows.describe('application').addBatch({
     },
   },
   
-  /*
   'routing an info query to a null node': {
     topic: function() {
       var self = this;
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.info(null, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.info(null, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new InfoQuery();
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
+    },
+    'should set req properties': function (err, req, res) {
+      assert.equal(req.query, 'info');
+      assert.isNull(req.node);
+    },
+    'should prepare response': function (err, req, res) {
+      assert.equal(res.name, 'iq');
+      assert.equal(res.attrs.id, '1');
+      assert.equal(res.attrs.type, 'result');
     },
   },
   
+  /*
   'routing an items query to a null node': {
     topic: function() {
       var self = this;
