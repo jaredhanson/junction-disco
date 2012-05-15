@@ -2,26 +2,28 @@ var vows = require('vows');
 var assert = require('assert');
 var junction = require('junction');
 var util = require('util');
-//var Client = require('junction-disco/client');
+var disco = require('junction-disco/index');
 var InfoQuery = require('junction-disco/elements/infoquery');
 var ItemsQuery = require('junction-disco/elements/itemsquery');
 
-/*
-vows.describe('Client').addBatch({
+vows.describe('application').addBatch({
   
   'initialization': {
     topic: function() {
-      return new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
+      return disco();
     },
     
-    'should have an info function': function (c) {
-      assert.isFunction(c.info);
+    'should have query extensions': function (app) {
+      assert.isFunction(app.info);
+      assert.isFunction(app.items);
     },
-    'should have an items function': function (c) {
-      assert.isFunction(c.items);
+    'should have implicit middleware': function (app) {
+      assert.lengthOf(app._stack, 2);
+      assert.lengthOf(app._filters, 0);
     },
   },
   
+  /*
   'routing an info query to a null node': {
     topic: function() {
       var self = this;
@@ -276,6 +278,6 @@ vows.describe('Client').addBatch({
       assert.equal(stanza.params.song, 'mr-jones');
     },
   },
+  */
   
 }).export(module);
-*/
