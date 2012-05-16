@@ -15,6 +15,46 @@ making development of XMPP applications as simple as that of web applications.
 
     $ npm install junction-disco
 
+## Usage
+
+#### Create an Application
+
+To create a new application, simply invoke `disco()`.
+
+     var app = disco();
+     
+#### Routing
+
+Junction/Disco uses the fragment identifier of the `http://jabber.org/protocol/disco`
+XML namespace to provide a routing API.  For example, a query may want to discover
+items associated with a band:
+
+    app.items('bands/:id', function(req, res, next) {
+      Band.findById(req.params.id, function(err, band) {
+        if (err) { return next(err); }
+        
+        var jid = req.to.toString();
+        var items = res.c('query', { xmlns: 'http://jabber.org/protocol/disco#items' });
+        band.albums.forEach(function(album) {
+          var node = 'bands/' + band.id + '/' + album.id;
+          items.c('item', { jid: jid, node: node, name: album.name });
+        });
+      });
+      res.send();
+    });
+
+#### Mount and Connect to XMPP Network
+
+Service discovery is a protocol that runs over XMPP, along side other extension
+protocols.  Because of this, the service discovery `app` is typically mounted as
+a sub-app of larger XMPP application.
+
+    var xmpp = junction()
+      .use(junction.logger())
+      .use(app);  // use disco app in larger XMPP app
+      
+    xmpp.connect({ jid: 'user@jabber.org', password: 's3cr3t' });
+
 ## Tests
 
     $ npm install --dev
