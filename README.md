@@ -1,7 +1,15 @@
 # Junction/Disco
 
-Fast and light XMPP Service Discovery framework built on [Node](http://nodejs.org)
-and [Junction](http://github.com/jaredhanson/junction).
+[XMPP](http://xmpp.org/) [Service Discovery](http://xmpp.org/extensions/xep-0030.html)
+framework for [Node](http://nodejs.org), built on [Junction](http://github.com/jaredhanson/junction).
+
+Junction/Disco is a minimalist framework layered on top of Junction, providing
+robust tooling to applications that need complete support for service discovery,
+including information and item queries, as well as JID+Node addressing.
+
+The Junction/Disco architecture is modeled upon the proven pairing of
+[Connect](http://www.senchalabs.org/connect/) + [Express](http://expressjs.com/),
+making development of XMPP applications as simple as that of web applications.
 
 ## Installation
 
