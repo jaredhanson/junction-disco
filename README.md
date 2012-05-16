@@ -5,7 +5,7 @@ framework for [Node](http://nodejs.org), built on [Junction](http://github.com/j
 
 Junction/Disco is a minimalist framework layered on top of Junction, providing
 robust tooling to applications that need complete support for service discovery,
-including information and item queries, as well as JID+Node addressing.
+including information and item queries, as well as JID+node addressing.
 
 The Junction/Disco architecture is modeled upon the proven pairing of
 [Connect](http://www.senchalabs.org/connect/) + [Express](http://expressjs.com/),

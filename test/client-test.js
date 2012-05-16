@@ -221,42 +221,41 @@ vows.describe('application').addBatch({
     },
   },
   
-  /*
-  
-  
-  
   'routing a query to a node with multiple middleware as an array': {
     topic: function() {
       var self = this;
       
       function doSomething(req, res, next) {
-        req.calls = 1;
+        req.didSomething = true;
         next();
       }
       function doSomethingElse(req, res, next) {
-        req.calls++;
+        req.didSomethingElse = true;
         next();
       }
       var doAll = [doSomething, doSomethingElse];
       
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items('music', doAll, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items('music', doAll, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery('music');
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
     },
-    'should invoke middleware': function (err, stanza) {
-      assert.equal(stanza.calls, 2);
+    'should invoke middleware': function (err, req, res) {
+      assert.isTrue(req.didSomething);
+      assert.isTrue(req.didSomethingElse);
     },
   },
   
@@ -265,44 +264,52 @@ vows.describe('application').addBatch({
       var self = this;
       
       function doSomething(req, res, next) {
-        req.calls = 1;
+        req.calls = ['doSomething'];
         next();
       }
       function doSomethingElse(req, res, next) {
-        req.calls++;
+        req.calls.push('doSomethingElse');
         next();
       }
       function otherStuff(req, res, next) {
-        req.calls++;
+        req.calls.push('otherStuff');
         next();
       }
       function otherThings(req, res, next) {
-        req.calls++;
+        req.calls.push('otherThings')
         next();
       }
       var doAll = [doSomething, doSomethingElse];
       var otherAll = [otherStuff, otherThings];
       
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items('music', doAll, otherAll, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items('music', doAll, otherAll, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery('music');
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
     },
-    'should invoke middleware': function (err, stanza) {
-      assert.equal(stanza.calls, 4);
+    'should invoke middleware': function (err, req, res) {
+      assert.lengthOf(req.calls, 4);
+      assert.equal(req.calls[0], 'doSomething');
+      assert.equal(req.calls[1], 'doSomethingElse');
+      assert.equal(req.calls[2], 'otherStuff');
+      assert.equal(req.calls[3], 'otherThings');
     },
   },
+  
+  /*
   
   'routing a query to a node with a capture': {
     topic: function() {
