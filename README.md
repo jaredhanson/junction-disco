@@ -39,8 +39,8 @@ items associated with a band:
           var node = 'bands/' + band.id + '/' + album.id;
           items.c('item', { jid: jid, node: node, name: album.name });
         });
+        res.send();
       });
-      res.send();
     });
 
 #### Mount and Connect to XMPP Network
