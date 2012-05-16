@@ -56,46 +56,99 @@ vows.describe('application').addBatch({
     },
   },
   
-  /*
   'routing an items query to a null node': {
     topic: function() {
       var self = this;
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items(null, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items(null, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery();
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
+    },
+    'should set req properties': function (err, req, res) {
+      assert.equal(req.query, 'items');
+      assert.isNull(req.node);
+    },
+    'should prepare response': function (err, req, res) {
+      assert.equal(res.name, 'iq');
+      assert.equal(res.attrs.id, '1');
+      assert.equal(res.attrs.type, 'result');
+    },
+  },
+  
+  'routing a query to a "root" node': {
+    topic: function() {
+      var self = this;
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.info(function(req, res, next) {
+        self.callback(null, req, res);
+      });
+      process.nextTick(function () {
+        var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
+        var query = new InfoQuery();
+        iq.id = '1';
+        iq.c(query);
+        connection.emit('stanza', iq.toXML());
+      });
+    },
+    
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
+    },
+    'should set req properties': function (err, req, res) {
+      assert.equal(req.query, 'info');
+      assert.isNull(req.node);
+    },
+    'should prepare response': function (err, req, res) {
+      assert.equal(res.name, 'iq');
+      assert.equal(res.attrs.id, '1');
+      assert.equal(res.attrs.type, 'result');
     },
   },
   
   'routing a query to a node': {
     topic: function() {
       var self = this;
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items('music', function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items('music', function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery('music');
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
+    },
+    'should set req properties': function (err, req, res) {
+      assert.equal(req.query, 'items');
+      assert.equal(req.node, 'music');
+    },
+    'should prepare response': function (err, req, res) {
+      assert.equal(res.name, 'iq');
+      assert.equal(res.attrs.id, '1');
+      assert.equal(res.attrs.type, 'result');
     },
   },
   
@@ -104,28 +157,30 @@ vows.describe('application').addBatch({
       var self = this;
       
       function doSomething(req, res, next) {
-        req.calls = 1;
+        req.didSomething = true;
         next();
       }
       
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items('music', doSomething, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items('music', doSomething, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery('music');
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
     },
-    'should invoke middleware': function (err, stanza) {
-      assert.equal(stanza.calls, 1);
+    'should invoke middleware': function (err, req, res) {
+      assert.isTrue(req.didSomething);
     },
   },
   
@@ -134,34 +189,41 @@ vows.describe('application').addBatch({
       var self = this;
       
       function doSomething(req, res, next) {
-        req.calls = 1;
+        req.didSomething = true;
         next();
       }
       function doSomethingElse(req, res, next) {
-        req.calls++;
+        req.didSomethingElse = true;
         next();
       }
       
-      var client = new Client({ jid: 'catalog.shakespeare.lit', disableStream: true });
-      client.items('music', doSomething, doSomethingElse, function(req, res, next) {
-        self.callback(null, req);
+      var connection = new events.EventEmitter();
+      var app = disco();
+      app.setup(connection);
+      app.items('music', doSomething, doSomethingElse, function(req, res, next) {
+        self.callback(null, req, res);
       });
       process.nextTick(function () {
         var iq = new junction.elements.IQ('catalog.shakespeare.lit', 'romeo@montague.net/orchard', 'get');
         var query = new ItemsQuery('music');
         iq.id = '1';
         iq.c(query);
-        client.emit('stanza', iq.toXML());
+        connection.emit('stanza', iq.toXML());
       });
     },
     
-    'should dispatch a request': function (err, stanza) {
-      assert.isNotNull(stanza);
+    'should dispatch a request': function (err, req, res) {
+      assert.isNotNull(req);
     },
-    'should invoke middleware': function (err, stanza) {
-      assert.equal(stanza.calls, 2);
+    'should invoke middleware': function (err, req, res) {
+      assert.isTrue(req.didSomething);
+      assert.isTrue(req.didSomethingElse);
     },
   },
+  
+  /*
+  
+  
   
   'routing a query to a node with multiple middleware as an array': {
     topic: function() {
